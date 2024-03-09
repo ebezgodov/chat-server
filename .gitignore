@@ -23,3 +23,4 @@ go.work
 .idea
 /bin/
 /.devcontainer/
+.DS_Store
