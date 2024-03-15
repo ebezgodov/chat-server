@@ -22,7 +22,6 @@ type server struct {
 
 // Create ...
 func (s *server) Create(_ context.Context, req *desc.CreateRequest) (*desc.CreateResponse, error) {
-
 	//Выводим в лог все элементы из списка repeated string usernames
 	for _, username := range req.GetUsernames() {
 		log.Printf("username: %s", username)
@@ -35,11 +34,9 @@ func (s *server) Create(_ context.Context, req *desc.CreateRequest) (*desc.Creat
 
 // Delete ...
 func (s *server) Delete(_ context.Context, req *desc.DeleteRequest) (*emptypb.Empty, error) {
-
 	log.Printf("chat id: %d", req.GetChatId())
 
-	out := new(emptypb.Empty)
-	return out, nil
+	return new(emptypb.Empty), nil
 }
 
 // SendMessage ...
@@ -47,8 +44,7 @@ func (s *server) SendMessage(_ context.Context, req *desc.SendMessageRequest) (*
 
 	log.Printf("from: %s, text: %s, timestamp: %s", req.GetFrom(), req.GetText(), req.GetTimestamp())
 
-	out := new(emptypb.Empty)
-	return out, nil
+	return new(emptypb.Empty), nil
 }
 
 // Main
