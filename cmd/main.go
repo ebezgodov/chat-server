@@ -41,7 +41,6 @@ func (s *server) Delete(_ context.Context, req *desc.DeleteRequest) (*emptypb.Em
 
 // SendMessage ...
 func (s *server) SendMessage(_ context.Context, req *desc.SendMessageRequest) (*emptypb.Empty, error) {
-
 	log.Printf("from: %s, text: %s, timestamp: %s", req.GetFrom(), req.GetText(), req.GetTimestamp())
 
 	return new(emptypb.Empty), nil
