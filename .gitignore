@@ -25,3 +25,4 @@ go.work
 /.devcontainer/
 .DS_Store
 /**/.DS_Store
+key.json

@@ -43,3 +43,17 @@ local-migration-up:
 
 local-migration-down:
 	${LOCAL_BIN}/goose -dir ${LOCAL_MIGRATION_DIR} postgres ${LOCAL_MIGRATION_DSN} down -v
+
+build:
+	GOOS=linux GOARCH=amd64 go build -o bin/chat-server cmd/main.go
+
+copy-to-server:
+	scp -i ~/.ssh/id_ed25519.pub bin/chat-server ebezgodov@158.160.106.156:/home/ebezgodov/
+
+docker-build-and-push:
+	docker buildx build --no-cache --platform linux/amd64 -t cr.yandex/crpevf6mqmpijh88dukr/chat-server:v0.0.1 .
+	cat key.json | docker login \
+		--username json_key \
+		--password-stdin \
+		cr.yandex
+	docker push cr.yandex/crpevf6mqmpijh88dukr/chat-server:v0.0.1

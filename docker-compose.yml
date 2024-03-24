@@ -1,0 +1,31 @@
+version: '3'
+
+services:
+  chat-server:
+    image: 
+      chat-server:v0.0.1
+    env_file:
+      - .env
+    ports:
+      - "50052:50052"
+
+  pg-chat:
+    image: postgres:14-alpine3.17
+    env_file:
+      - .env
+    environment:
+      - "POSTGRES_DB=${PG_DATABASE_NAME}"
+      - "POSTGRES_USER=${PG_USER}"
+      - "POSTGRES_PASSWORD=${PG_PASSWORD}"
+    ports:
+      - "${PG_LH_PORT}:${PG_PORT}"
+    volumes:
+      - ./pg-local-data:/var/lib/postgresql/data
+
+  migrator:
+    build:
+      context: .
+      dockerfile: migration.Dockerfile
+    restart: on-failure
+    environment:
+      DB_HOST: db
