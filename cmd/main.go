@@ -111,7 +111,7 @@ func main() {
 	}
 
 	// Создаем пул соединений с базой данных
-	pool, err := pgxpool.Connect(ctx, "host=pg-chat-local port=5432 dbname=chat user=chat-user password=chat-password sslmode=disable")
+	pool, err := pgxpool.Connect(ctx, "host=pg-chat port=5432 dbname=chat user=chat-user password=chat-password sslmode=disable")
 	if err != nil {
 		log.Fatalf("failed to connect to database: %v", err)
 	}
