@@ -2,7 +2,7 @@ version: '3'
 
 services:
   chat-server:
-    image: chat-server:v0.0.1
+    image: chat-serverr:v0.0.1
     env_file:
       - .env
     ports:
