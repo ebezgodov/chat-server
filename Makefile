@@ -51,9 +51,9 @@ copy-to-server:
 	scp -i ~/.ssh/id_ed25519.pub bin/chat-server ebezgodov@158.160.106.156:/home/ebezgodov/
 
 docker-build-and-push:
-	docker buildx build --no-cache --platform linux/amd64 -t cr.yandex/crpevf6mqmpijh88dukr/chat-server:v0.0.1 .
+	docker buildx build --no-cache --platform linux/amd64 -t cr.yandex/crpevf6mqmpijh88dukr/chat-server:v0.0.2 .
 	cat key.json | docker login \
 		--username json_key \
 		--password-stdin \
 		cr.yandex
-	docker push cr.yandex/crpevf6mqmpijh88dukr/chat-server:v0.0.1
+	docker push cr.yandex/crpevf6mqmpijh88dukr/chat-server:v0.0.2

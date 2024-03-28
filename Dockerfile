@@ -12,4 +12,4 @@ FROM alpine:latest
 WORKDIR /root/
 COPY --from=builder /go/bin/chat_server .
 
-CMD ["sh", "-c", "sleep 2 && ./chat_server"]
+CMD ["sh", "-c", "sleep 10 && ./chat_server"]

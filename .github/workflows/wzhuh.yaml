@@ -1,0 +1,67 @@
+name: CI
+
+on:
+  push:
+    branches: [ testaction ]
+  pull_request:
+    branches: [ testaction ]
+
+env:
+  REGISTRY: "cr.yandex/crpevf6mqmpijh88dukr/"
+  IMAGE_NAME: "chat-server"
+  CONTAINER_NAME: "chat-server"
+  LOCAL_PATH: "/chat-server"
+
+jobs:
+  image-build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout testaction
+        uses: actions/checkout@v3
+        with:
+          ref: testaction
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Login to Yandex Cloud Container Registry
+        id: login-cr
+        uses: yc-actions/yc-cr-login@v2
+        with:
+          yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
+
+      - name: Build and Push Docker Image
+        run: |
+          TAG_NAME=$(echo $GITHUB_SHA | head -c7)
+          docker buildx create --use
+          docker buildx build --no-cache --push --tag $REGISTRY/$IMAGE_NAME:$TAG_NAME -f Dockerfile . 
+
+  deploy-image:
+    runs-on: ubuntu-latest
+    needs: image-build-and-push
+
+    steps:
+      - name: Deploy to Yandex Cloud via SSH action
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSHKEY }}
+          envs: IMAGE_NAME,REGISTRY,GITHUB_SHA,CONTAINER_NAME, LOCAL_PATH
+          script: |
+            # Set up variables
+            TAG_NAME=$(echo $GITHUB_SHA | head -c7)
+            
+            cd $LOCAL_PATH
+
+            # Login into Yandex Registry
+            cat key2.json | docker login --username json_key --password-stdin $REGISTRY
+
+            # Stop running container
+            docker compose down $CONTAINER_NAME
+            
+            # Run a new container from a new image. Тут обновляется и код тоже, включая docker-compose и миграции. Поскольку migrator указан как зависимость для chat-server в docker-compose, то он тоже запускается и отрабатывает.
+            git pull
+            docker pull $REGISTRY$IMAGE_NAME:$TAG_NAME
+            docker compose up -d $CONTAINER_NAME
