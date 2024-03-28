@@ -63,5 +63,6 @@ jobs:
             
             # Run a new container from a new image. Тут обновляется и код тоже, включая docker-compose и миграции. Поскольку migrator указан как зависимость для chat-server в docker-compose, то он тоже запускается и отрабатывает.
             git pull
+            git checkout testaction
             docker pull $REGISTRY$IMAGE_NAME:$TAG_NAME
             docker compose up -d --build $CONTAINER_NAME
